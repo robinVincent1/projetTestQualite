@@ -50,7 +50,9 @@ public class GameService {
     public void startGame() {
         // Distribuer les cartes aux joueurs
         distributeCardToPlayer(player);
+        distributeCardToPlayer(player);
         // Distribuer les cartes au croupier
+        distributeCardToDealer();
         distributeCardToDealer();
         // Envoyer l'état initial du jeu à tous les joueurs
         gameEvent.fire(new GameEventMessage("Deal", new GameStateCardsChange(player, dealer)));
