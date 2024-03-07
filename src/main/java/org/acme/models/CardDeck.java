@@ -37,4 +37,9 @@ public class CardDeck {
         this.nbCards = nbCards;
     }
 
+    public void removeCard(String card) {
+        cards.remove(card);
+        nbCards--;
+    }
+
 }

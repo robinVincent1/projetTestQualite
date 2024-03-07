@@ -109,7 +109,7 @@ public class GameService {
     private String drawCard() {
         // Retirer une carte du jeu de cartes
         int index = (int) (Math.random() * cardDeck.getNbCards());
-        String card = cardDeck.getCards().remove(index); // Supprimer la carte à l'index spécifié
+        String card = cardDeck.getCards().get(index); // Supprimer la carte à l'index spécifié
         cardDeck.setNbCards(cardDeck.getNbCards() - 1);
         return card;
     }
@@ -117,9 +117,9 @@ public class GameService {
 
     public void hit(String playerId) {
         // Ajouter une carte à la main du joueur
+
         Player player = players.stream().filter(p -> p.getId().equals(playerId)).findFirst().get();
         String card = drawCard();
-
         //on ajoute le score de la carte au score du player
         String[] cardSplit = card.split("-");
         int score;
@@ -129,13 +129,13 @@ public class GameService {
             score = 11;
         } else {
             try {
+
                 score = Integer.parseInt(cardSplit[0]);
             } catch (NumberFormatException e) {
                 // Gérer l'erreur de conversion
                 score = 0;
             }
         }
-
         player.getHand().add(card);
         player.setScore(player.getScore() + score);
 

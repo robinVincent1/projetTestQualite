@@ -26,6 +26,7 @@ public class WebSocketServer {
     GameService gameService;
 
     public void onGameEvent(@Observes GameEventMessage event) {
+        System.out.println("la");
         broadcast(event);
     }
 
@@ -53,6 +54,7 @@ public class WebSocketServer {
 
     @OnMessage
     public void onMessage(String message, Session session) {
+        System.out.println("Received message: " + message);
         // Supposons que le message contient l'ID du joueur et son action sous la forme "playerId:deal/hit/stand/reload"
         String[] parts = message.split(":");
         if (parts.length == 2) {
