@@ -21,7 +21,7 @@ public class GameService {
     @Inject
     Event<GameEventMessage> gameEvent;
 
-    private List<Player> players = new ArrayList<>();
+    private Player player;
     private Dealer dealer;
     private CardDeck cardDeck;
 
@@ -33,36 +33,38 @@ public class GameService {
 
 
     public String getInitialState() {
-        Player player = new Player(String.valueOf(players.size()), "hasard", new ArrayList<>(), 0, 100, 0, true, false, false);
+        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, false, false);
         dealer = new Dealer(0, false, new ArrayList<>());
-        players.add(player);
-        return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(players, dealer, cardDeck)).toJson();
+        return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(player, dealer)).toJson();
     }
 
+    /*
     public void addPlayer(String id, String pseudo) {
         players.add(new Player(id, pseudo, new ArrayList<>(), 0, 100, 0, false, false,false));
     }
 
-    public void removePlayer(String id) {
+    /*public void removePlayer(String id) {
         players.removeIf(player -> player.getId().equals(id));
     }
-
+    */
     public void startGame() {
         // Distribuer les cartes aux joueurs
-        distributeCardsToPlayers();
+        distributeCardToPlayer(player);
         // Distribuer les cartes au croupier
-        distributeCardsToDealer();
+        distributeCardToDealer();
         // Envoyer l'état initial du jeu à tous les joueurs
-        gameEvent.fire(new GameEventMessage("Deal", new GameStateCardsChange(players, dealer, cardDeck)));
+        gameEvent.fire(new GameEventMessage("Deal", new GameStateCardsChange(player, dealer)));
     }
 
+    /*
     private void distributeCardsToPlayers() {
-        for (Player player : players) {
+        for (Player player : player) {
             for (int i = 0; i < 2; i++) {
                 distributeCardToPlayer(player);
             }
         }
     }
+    */
 
     private void distributeCardToPlayer(Player player) {
         String card = drawCard();
@@ -71,12 +73,7 @@ public class GameService {
         player.setScore(player.getScore() + score);
     }
 
-    private void distributeCardsToDealer() {
-        dealer = new Dealer(0, false, new ArrayList<>());
-        for (int i = 0; i < 2; i++) {
-            distributeCardToDealer();
-        }
-    }
+
 
     private void distributeCardToDealer() {
         String card = drawCard();
@@ -107,6 +104,7 @@ public class GameService {
 
 
     private String drawCard() {
+
         // Retirer une carte du jeu de cartes
         int index = (int) (Math.random() * cardDeck.getNbCards());
         String card = cardDeck.getCards().get(index); // Supprimer la carte à l'index spécifié
@@ -118,7 +116,6 @@ public class GameService {
     public void hit(String playerId) {
         // Ajouter une carte à la main du joueur
 
-        Player player = players.stream().filter(p -> p.getId().equals(playerId)).findFirst().get();
         String card = drawCard();
         //on ajoute le score de la carte au score du player
         String[] cardSplit = card.split("-");
@@ -136,17 +133,19 @@ public class GameService {
                 score = 0;
             }
         }
+        System.out.println("hand" + player.getHand());
         player.getHand().add(card);
+        System.out.println("2");
         player.setScore(player.getScore() + score);
-
+        System.out.println("3");
         // Envoyer l'état du jeu mis à jour à tous les joueurs
-        gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(players, dealer, cardDeck)));
+        System.out.println("la");
+        gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
 
 
     public void stand(String playerId) {
         // Mettre fin au tour du joueur
-        Player player = players.stream().filter(p -> p.getId().equals(playerId)).findFirst().get();
         player.setIsStanding(true);
         player.setIsPlaying(false);
         while (dealer.getScore() <= 17) {
@@ -174,27 +173,31 @@ public class GameService {
             player.setWallet(player.getBet() * 2);
         }
         // Envoyer l'état du jeu mis à jour à tous les joueurs
-        gameEvent.fire(new GameEventMessage("stand", new GameStateCardsChange(players, dealer, cardDeck)));
+        gameEvent.fire(new GameEventMessage("stand", new GameStateCardsChange(player, dealer)));
     }
 
     public void bet(String playerId, int amount) {
         // Mettre à jour le montant de la mise du joueur
-        Player player = players.stream().filter(p -> p.getId().equals(playerId)).findFirst().get();
         player.setBet(amount);
         player.setWallet(player.getWallet() - amount);
         // Envoyer l'état du jeu mis à jour à tous les joueurs
-        gameEvent.fire(new GameEventMessage("bet", new GameStateCardsChange(players, dealer, cardDeck)));
+        gameEvent.fire(new GameEventMessage("bet", new GameStateCardsChange(player, dealer)));
     }
 
     public void reload(String playerId) {
-        Player player = players.stream().filter(p -> p.getId().equals(playerId)).findFirst().get();
         //on remet le isWInning a false
         player.setIsWinner(false);
         //on met le bet à 0
         player.setBet(0);
         //on met le deck à l'état initial
+        player.setHand(new ArrayList<>());
+        //replace the player with the same id with the new player
+
+
+        dealer.setHand(new ArrayList<>());
         List<String> cards = Arrays.asList("2-C.png", "2-D.png", "2-H.png", "2-S.png", "3-C.png", "3-D.png", "3-H.png", "3-S.png", "4-C.png", "4-D.png", "4-H.png", "4-S.png", "5-C.png", "5-D.png", "5-H.png", "5-S.png", "6-C.png", "6-D.png", "6-H.png", "6-S.png", "7-C.png", "7-D.png", "7-H.png", "7-S.png", "8-C.png", "8-D.png", "8-H.png", "8-S.png", "9-C.png", "9-D.png", "9-H.png", "9-S.png", "10-C.png", "10-D.png", "10-H.png", "10-S.png", "A-C.png", "A-D.png", "A-H.png", "A-S.png", "J-C.png", "J-D.png", "J-H.png", "J-S.png", "Q-C.png", "Q-D.png", "Q-H.png", "Q-S.png", "K-C.png", "K-D.png", "K-H.png", "K-S.png");
         cardDeck = new CardDeck("1", cards, 52);
+        gameEvent.fire(new GameEventMessage("reload", new GameStateCardsChange(player, dealer)));
         startGame();
     }
 }

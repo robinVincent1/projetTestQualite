@@ -44,7 +44,6 @@ public class WebSocketServer {
     public void onClose(Session session) {
         sessions.remove(session.getId());
         // Gérer la déconnexion du client
-        gameService.removePlayer(session.getId());
     }
 
     @OnError

@@ -3,36 +3,27 @@ package org.acme.models;
 import java.util.List;
 
 public class GameStateCardsChange {
-    private List<Player> players;
+    private Player player;
     private Dealer dealer;
-    private CardDeck cardDeck;
-    public GameStateCardsChange( List<Player> players, Dealer dealer, CardDeck cardDeck) {
-        this.players = players;
+    public GameStateCardsChange(Player player, Dealer dealer) {
+        this.player = player;
         this.dealer = dealer;
-        this.cardDeck = cardDeck;
     }
 
-    public List<Player> getPlayer() {
-        return players;
+    public Player getPlayer() {
+        return player;
     }
 
     public Dealer getDealer() {
         return dealer;
     }
 
-    public CardDeck getCardDeck() {
-        return cardDeck;
-    }
-
-    public void setCardDeck(CardDeck cardDeck) {
-        this.cardDeck = cardDeck;
-    }
 
     public void setDealer(Dealer dealer) {
         this.dealer = dealer;
     }
 
-    public void setPlayer(List<Player> player) {
-        this.players = player;
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }
