@@ -139,11 +139,9 @@ public class GameService {
         player.setScore(player.getScore() + score);
         if (player.getScore()==21){
             player.setGameStatus("BlackJack");
-            player.setWallet(player.getWallet() + player.getBet()*3);
         }
         if(player.getScore()>21){
             player.setGameStatus("Busted");
-            player.setWallet(player.getWallet() - player.getBet());
         }
         gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
@@ -173,17 +171,19 @@ public class GameService {
             dealer.getHand().add(card);
             dealer.setScore(dealer.getScore() + score);
         }
+        if (player.getGameStatus().equals("BlackJack")) {
+            player.setWallet(player.getWallet() + player.getBet() * 3);
+        }
         if (player.getScore() == dealer.getScore()) {
             player.setGameStatus("Tie");
             player.setWallet(player.getWallet() + player.getBet());
         }
         if (player.getScore() <= 21 && (player.getScore() > dealer.getScore() || dealer.getScore() > 21)) {
             player.setGameStatus("Winner");
-            player.setWallet(player.getBet() * 2);
+            player.setWallet(player.getBet() * 2 + player.getWallet());
         }
         else{
             player.setGameStatus("Loser");
-            player.setWallet(player.getWallet() - player.getBet());
         }
         // Envoyer l'état du jeu mis à jour à tous les joueurs
         gameEvent.fire(new GameEventMessage("stand", new GameStateCardsChange(player, dealer)));
@@ -204,14 +204,16 @@ public class GameService {
         //on met le bet à 0
         player.setBet(0);
         //on met le deck à l'état initial
+        player.setIsStanding(false);
         player.setHand(new ArrayList<>());
-        //replace the player with the same id with the new player
+        player.setScore(0);
 
 
         dealer.setHand(new ArrayList<>());
+        dealer.setScore(0);
         List<String> cards = Arrays.asList("2-C.png", "2-D.png", "2-H.png", "2-S.png", "3-C.png", "3-D.png", "3-H.png", "3-S.png", "4-C.png", "4-D.png", "4-H.png", "4-S.png", "5-C.png", "5-D.png", "5-H.png", "5-S.png", "6-C.png", "6-D.png", "6-H.png", "6-S.png", "7-C.png", "7-D.png", "7-H.png", "7-S.png", "8-C.png", "8-D.png", "8-H.png", "8-S.png", "9-C.png", "9-D.png", "9-H.png", "9-S.png", "10-C.png", "10-D.png", "10-H.png", "10-S.png", "A-C.png", "A-D.png", "A-H.png", "A-S.png", "J-C.png", "J-D.png", "J-H.png", "J-S.png", "Q-C.png", "Q-D.png", "Q-H.png", "Q-S.png", "K-C.png", "K-D.png", "K-H.png", "K-S.png");
         cardDeck = new CardDeck("1", cards, 52);
         gameEvent.fire(new GameEventMessage("reload", new GameStateCardsChange(player, dealer)));
-        startGame();
+
     }
 }
