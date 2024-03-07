@@ -34,6 +34,7 @@ public class GameService {
 
     public String getInitialState() {
         Player player = new Player(String.valueOf(players.size()), "hasard", new ArrayList<>(), 0, 100, 0, true, false, false);
+        dealer = new Dealer(0, false, new ArrayList<>());
         players.add(player);
         return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(players, dealer, cardDeck)).toJson();
     }
@@ -71,7 +72,7 @@ public class GameService {
     }
 
     private void distributeCardsToDealer() {
-        dealer = new Dealer(0, 0, new ArrayList<>());
+        dealer = new Dealer(0, false, new ArrayList<>());
         for (int i = 0; i < 2; i++) {
             distributeCardToDealer();
         }

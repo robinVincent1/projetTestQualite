@@ -4,10 +4,10 @@ import java.util.List;
 
 public class Dealer {
     private int score;
-    private int isWinner;
+    private boolean isWinner;
     private List<String> hand; // List de Card
 
-    public Dealer(int score, int isWinner, List<String> hand) {
+    public Dealer(int score, boolean isWinner, List<String> hand) {
         this.score = score;
         this.isWinner = isWinner;
         this.hand = hand;
@@ -21,11 +21,11 @@ public class Dealer {
         this.score = score;
     }
 
-    public int getIsWinner() {
+    public boolean getIsWinner() {
         return isWinner;
     }
 
-    public void setIsWinner(int isWinner) {
+    public void setIsWinner(boolean isWinner) {
         this.isWinner = isWinner;
     }
 
