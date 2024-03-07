@@ -33,7 +33,7 @@ public class GameService {
 
 
     public String getInitialState() {
-        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, false, false);
+        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, "En cours", false);
         dealer = new Dealer(0, false, new ArrayList<>());
         return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(player, dealer)).toJson();
     }
@@ -128,20 +128,23 @@ public class GameService {
             score = 11;
         } else {
             try {
-
                 score = Integer.parseInt(cardSplit[0]);
             } catch (NumberFormatException e) {
                 // Gérer l'erreur de conversion
                 score = 0;
             }
-        }
-        System.out.println("hand" + player.getHand());
+        };
+
         player.getHand().add(card);
-        System.out.println("2");
         player.setScore(player.getScore() + score);
-        System.out.println("3");
-        // Envoyer l'état du jeu mis à jour à tous les joueurs
-        System.out.println("la");
+        if (player.getScore()==21){
+            player.setGameStatus("BlackJack");
+            player.setWallet(player.getWallet() + player.getBet()*3);
+        }
+        if(player.getScore()>21){
+            player.setGameStatus("Busted");
+            player.setWallet(player.getWallet() - player.getBet());
+        }
         gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
 
@@ -170,25 +173,34 @@ public class GameService {
             dealer.getHand().add(card);
             dealer.setScore(dealer.getScore() + score);
         }
+        if (player.getScore() == dealer.getScore()) {
+            player.setGameStatus("Tie");
+            player.setWallet(player.getWallet() + player.getBet());
+        }
         if (player.getScore() <= 21 && (player.getScore() > dealer.getScore() || dealer.getScore() > 21)) {
-            player.setIsWinner(true);
+            player.setGameStatus("Winner");
             player.setWallet(player.getBet() * 2);
+        }
+        else{
+            player.setGameStatus("Loser");
+            player.setWallet(player.getWallet() - player.getBet());
         }
         // Envoyer l'état du jeu mis à jour à tous les joueurs
         gameEvent.fire(new GameEventMessage("stand", new GameStateCardsChange(player, dealer)));
     }
 
-    public void bet(String playerId, int amount) {
+    public void bet(String playerId, String amount) {
         // Mettre à jour le montant de la mise du joueur
-        player.setBet(amount);
-        player.setWallet(player.getWallet() - amount);
+        int amountInt = Integer.parseInt(amount);
+        player.setBet(amountInt);
+        player.setWallet(player.getWallet() - amountInt);
         // Envoyer l'état du jeu mis à jour à tous les joueurs
         gameEvent.fire(new GameEventMessage("bet", new GameStateCardsChange(player, dealer)));
     }
 
     public void reload(String playerId) {
         //on remet le isWInning a false
-        player.setIsWinner(false);
+        player.setGameStatus("En cours");
         //on met le bet à 0
         player.setBet(0);
         //on met le deck à l'état initial

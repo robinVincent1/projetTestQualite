@@ -15,9 +15,9 @@ public class Player {
 
     private boolean isStanding;
     private boolean isPlaying;
-    private boolean isWinner;
+    private String GameStatus;
 
-    public Player(String id, String pseudo, List<String> hand, int score, int wallet, int bet, boolean isPlaying, boolean isWinner , boolean isStanding) {
+    public Player(String id, String pseudo, List<String> hand, int score, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding) {
         this.id = id;
         this.isStanding = isStanding;
         this.pseudo = pseudo;
@@ -26,7 +26,7 @@ public class Player {
         this.wallet = wallet;
         this.bet = bet;
         this.isPlaying = isPlaying;
-        this.isWinner = isWinner;
+        this.GameStatus = GameStatus;
     }
 
     public boolean getIsStanding() {
@@ -93,12 +93,12 @@ public class Player {
         this.isPlaying = isPlaying;
     }
 
-    public boolean getIsWinner() {
-        return isWinner;
+    public String getGameStatus() {
+        return GameStatus;
     }
 
-    public void setIsWinner(boolean isWinner) {
-        this.isWinner = isWinner;
+    public void setGameStatus(String GameStatus) {
+        this.GameStatus = GameStatus;
     }
 
 

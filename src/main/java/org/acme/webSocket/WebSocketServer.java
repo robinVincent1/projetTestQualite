@@ -58,20 +58,29 @@ public class WebSocketServer {
         String[] parts = message.split(":");
         if (parts.length == 2) {
             String playerId = parts[0];
-            String action = parts[1]; // Correction ici
+            String action = parts[1];// Correction ici
+
             try {
                 switch (action) {
                     case "deal" -> gameService.startGame();
                     case "hit" -> gameService.hit(playerId);
                     case "stand" -> gameService.stand(playerId);
                     case "reload" -> gameService.reload(playerId);
-                    default -> {
-                        int betAmount = Integer.parseInt(action);
-                        gameService.bet(playerId, betAmount);
-                    }
                 }
             } catch (NumberFormatException e) {
                 session.getAsyncRemote().sendText("Message invalide. Format attendu: 'playerId:action'.");
+            }
+        }
+        if (parts.length == 3){
+            String playerId = parts[0];
+            String action = parts[1];
+            String amount = parts[2];
+            try {
+                switch (action) {
+                    case "bet" -> gameService.bet(playerId,amount);
+                }
+            } catch (NumberFormatException e) {
+                session.getAsyncRemote().sendText("Message invalide. Format attendu: 'playerId:action:amount'.");
             }
         }
     }
