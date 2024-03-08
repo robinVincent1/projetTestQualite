@@ -65,6 +65,7 @@ public class WebSocketServer {
                     case "hit" -> gameService.hit(playerId);
                     case "stand" -> gameService.stand(playerId);
                     case "reload" -> gameService.reload(playerId);
+                    case "double" -> gameService.doubleDown(playerId);
                 }
             } catch (NumberFormatException e) {
                 session.getAsyncRemote().sendText("Message invalide. Format attendu: 'playerId:action'.");

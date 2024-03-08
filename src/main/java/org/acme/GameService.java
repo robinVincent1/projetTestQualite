@@ -218,6 +218,16 @@ public class GameService {
         gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
 
+    public void doubleDown(String playerId){
+        player.setWallet(player.getWallet() - player.getBet());
+        player.setBet(player.getBet() * 2);
+        String card = drawCard();
+        int score = calculateCardScore(card);
+        player.getHand().add(card);
+        player.setScore(player.getScore() + score);
+        System.out.println("doubleDown");
+        stand(playerId);
+    }
 
 
     public void stand(String playerId) {
