@@ -13,11 +13,13 @@ public class Player {
     private int wallet;
     private int bet;
 
+    private int clock;
+
     private boolean isStanding;
     private boolean isPlaying;
     private String GameStatus;
 
-    public Player(String id, String pseudo, List<String> hand, int score, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding) {
+    public Player(String id, String pseudo, List<String> hand, int score, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock) {
         this.id = id;
         this.isStanding = isStanding;
         this.pseudo = pseudo;
@@ -27,6 +29,7 @@ public class Player {
         this.bet = bet;
         this.isPlaying = isPlaying;
         this.GameStatus = GameStatus;
+        this.clock = clock;
     }
 
     public boolean getIsStanding() {
@@ -99,6 +102,14 @@ public class Player {
 
     public void setGameStatus(String GameStatus) {
         this.GameStatus = GameStatus;
+    }
+
+    public int getClock() {
+        return clock;
+    }
+
+    public void setClock(int clock) {
+        this.clock = clock;
     }
 
 

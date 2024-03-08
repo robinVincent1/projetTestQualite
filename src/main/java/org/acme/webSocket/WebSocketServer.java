@@ -26,7 +26,6 @@ public class WebSocketServer {
     GameService gameService;
 
     public void onGameEvent(@Observes GameEventMessage event) {
-        System.out.println("la");
         broadcast(event);
     }
 

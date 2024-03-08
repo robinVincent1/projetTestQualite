@@ -25,6 +25,10 @@ public class GameService {
     private Dealer dealer;
     private CardDeck cardDeck;
 
+    private volatile boolean stopClock = false;
+
+    private int timeclock = 10;
+
     public GameService() {
         // Créer un jeu de cartes
         List<String> cards = Arrays.asList("2-C.png", "2-D.png", "2-H.png", "2-S.png", "3-C.png", "3-D.png", "3-H.png", "3-S.png", "4-C.png", "4-D.png", "4-H.png", "4-S.png", "5-C.png", "5-D.png", "5-H.png", "5-S.png", "6-C.png", "6-D.png", "6-H.png", "6-S.png", "7-C.png", "7-D.png", "7-H.png", "7-S.png", "8-C.png", "8-D.png", "8-H.png", "8-S.png", "9-C.png", "9-D.png", "9-H.png", "9-S.png", "10-C.png", "10-D.png", "10-H.png", "10-S.png", "A-C.png", "A-D.png", "A-H.png", "A-S.png", "J-C.png", "J-D.png", "J-H.png", "J-S.png", "Q-C.png", "Q-D.png", "Q-H.png", "Q-S.png", "K-C.png", "K-D.png", "K-H.png", "K-S.png");
@@ -33,7 +37,7 @@ public class GameService {
 
 
     public String getInitialState() {
-        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, "En cours", false);
+        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, "Menu", false,timeclock);
         dealer = new Dealer(0, false, new ArrayList<>());
         return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(player, dealer)).toJson();
     }
@@ -47,8 +51,35 @@ public class GameService {
         players.removeIf(player -> player.getId().equals(id));
     }
     */
+
+
+
+    public void startClock() {
+        new Thread(() -> {
+            while (player.getClock() > 0 && !stopClock) {
+                player.setClock(player.getClock() - 1);
+                gameEvent.fire(new GameEventMessage("Clock", new GameStateCardsChange(player, dealer)));
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException("Thread was interrupted", e);
+                }
+            }
+            if (!stopClock) {
+                hit(player.getId());
+            }
+        }).start();
+    }
+
+    public void stopClock() {
+        stopClock = true;
+    }
+
+
     public void startGame() {
         // Distribuer les cartes aux joueurs
+        startClock();
         distributeCardToPlayer(player);
         distributeCardToPlayer(player);
         // Distribuer les cartes au croupier
@@ -117,6 +148,7 @@ public class GameService {
 
     public void hit(String playerId) {
         // Ajouter une carte à la main du joueur
+        stopClock();
 
         String card = drawCard();
         //on ajoute le score de la carte au score du player
@@ -149,6 +181,7 @@ public class GameService {
 
     public void stand(String playerId) {
         // Mettre fin au tour du joueur
+        stopClock();
         player.setIsStanding(true);
         player.setIsPlaying(false);
         while (dealer.getScore() <= 17) {
@@ -194,16 +227,18 @@ public class GameService {
         int amountInt = Integer.parseInt(amount);
         player.setBet(amountInt);
         player.setWallet(player.getWallet() - amountInt);
+        player.setGameStatus("BetDone");
         // Envoyer l'état du jeu mis à jour à tous les joueurs
         gameEvent.fire(new GameEventMessage("bet", new GameStateCardsChange(player, dealer)));
     }
 
     public void reload(String playerId) {
         //on remet le isWInning a false
-        player.setGameStatus("En cours");
+        player.setGameStatus("Menu");
         //on met le bet à 0
         player.setBet(0);
         //on met le deck à l'état initial
+        player.setClock(timeclock);
         player.setIsStanding(false);
         player.setHand(new ArrayList<>());
         player.setScore(0);
