@@ -79,6 +79,7 @@ public class WebSocketServer {
             try {
                 switch (action) {
                     case "bet" -> gameService.bet(playerId,amount);
+                    case "pseudo" -> gameService.pseudo(playerId, amount);
                 }
             } catch (NumberFormatException e) {
                 session.getAsyncRemote().sendText("Message invalide. Format attendu: 'playerId:action:amount'.");

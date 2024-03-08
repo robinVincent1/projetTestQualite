@@ -97,6 +97,11 @@ public class GameService {
         gameEvent.fire(new GameEventMessage("Deal", new GameStateCardsChange(player, dealer)));
     }
 
+    public void pseudo(String playerId, String pseudo) {
+        player.setPseudo(pseudo);
+        gameEvent.fire(new GameEventMessage("pseudo", new GameStateCardsChange(player, dealer)));
+    }
+
     /*
     private void distributeCardsToPlayers() {
         for (Player player : player) {
