@@ -37,7 +37,7 @@ public class GameService {
 
 
     public String getInitialState() {
-        player = new Player("0", "Pseudo", new ArrayList<>(), 0,null, 100, 0, true, "Menu", false,timeclock);
+        player = new Player("0", "Pseudo", new ArrayList<>(), 0,null, 100, 0, true, "Menu", false,timeclock,false);
         dealer = new Dealer(0, false, new ArrayList<>());
         return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(player, dealer)).toJson();
     }
@@ -164,6 +164,13 @@ public class GameService {
         return card;
     }
 
+    public void insurance(String playerId){
+        player.setWallet(player.getWallet() - player.getBet()/2);
+        player.setBet(player.getBet() + player.getBet()/2);
+        player.setAssurance(true);
+        gameEvent.fire(new GameEventMessage("insurance", new GameStateCardsChange(player, dealer)));
+    }
+
 
     public void hit(String playerId) {
         // Ajouter une carte à la main du joueur
@@ -260,9 +267,11 @@ public class GameService {
             dealer.getHand().add(card);
             dealer.setScore(dealer.getScore() + score);
         }
-        if (player.getGameStatus().equals("BlackJack")) {
-            player.setWallet(player.getWallet() + player.getBet() * 3);
+        if (dealer.getScore() == 21 && player.getAssurance() == true) {
+            player.setGameStatus("InsuranceWinner");
+            player.setWallet(player.getWallet() + 2 * player.getBet());
         }
+
         if (player.getScore() == dealer.getScore()) {
             player.setGameStatus("Tie");
             player.setWallet(player.getWallet() + player.getBet());

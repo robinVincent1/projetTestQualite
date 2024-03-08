@@ -13,16 +13,18 @@ public class Player {
     private int score;
 
     private Integer altscore;
-    private int wallet;
-    private int bet;
+    private double wallet;
+    private double bet;
 
     private int clock;
+
+    private boolean assurance;
 
     private boolean isStanding;
     private boolean isPlaying;
     private String GameStatus;
 
-    public Player(String id, String pseudo, List<String> hand, int score,Integer altscore, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock) {
+    public Player(String id, String pseudo, List<String> hand, int score,Integer altscore, double wallet, double bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock, boolean assurance) {
         this.id = id;
         this.isStanding = isStanding;
         this.pseudo = pseudo;
@@ -34,6 +36,7 @@ public class Player {
         this.isPlaying = isPlaying;
         this.GameStatus = GameStatus;
         this.clock = clock;
+        this.assurance = assurance;
     }
 
     public boolean getIsStanding() {
@@ -76,19 +79,19 @@ public class Player {
         this.score = score;
     }
 
-    public int getWallet() {
+    public double getWallet() {
         return wallet;
     }
 
-    public void setWallet(int wallet) {
+    public void setWallet(double wallet) {
         this.wallet = wallet;
     }
 
-    public int getBet() {
+    public double getBet() {
         return bet;
     }
 
-    public void setBet(int bet) {
+    public void setBet(double bet) {
         this.bet = bet;
     }
 
@@ -122,6 +125,14 @@ public class Player {
 
     public void setAltScore(Integer altscore) {
         this.altscore = altscore;
+    }
+
+    public boolean getAssurance() {
+        return assurance;
+    }
+
+    public void setAssurance(boolean assurance) {
+        this.assurance = assurance;
     }
 
 
