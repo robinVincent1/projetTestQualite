@@ -206,6 +206,10 @@ public class GameService {
             player.setAltScore(player.getAltScore() + altscore);
             player.setScore(player.getScore() + score);
         }
+        else if(player.getAltScore()==null && cardSplit[0].equals("A")){
+            player.setAltScore(player.getScore() + altscore);
+            player.setScore(player.getScore() + score);
+        }
         else{
             player.setScore(player.getScore() + score);
         }
@@ -308,6 +312,7 @@ public class GameService {
         //on met le bet à 0
         player.setBet(0);
         //on met le deck à l'état initial
+        player.setAltScore(null);
         player.setClock(timeclock);
         player.setIsStanding(false);
         player.setHand(new ArrayList<>());
