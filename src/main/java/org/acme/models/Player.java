@@ -8,32 +8,31 @@ public class Player {
     private String id;
     private String pseudo;
 
-    private List<String> hand; // List de Card
+    private List<String> hand; // List des cartes dans sa main
 
-    private int score;
+    private int score; // score des cartes dans sa main
 
-    private Integer altscore;
-    private double wallet;
-    private double bet;
+    private Integer altscore; // score alternatif en cas d'as dans la main qui vaut 1 ou 11
+    private double wallet; //porte-feuille
+    private double bet; //mise sur la partie
 
-    private int clock;
+    private int clock; //timer
 
-    private boolean assurance;
+    private boolean assurance; // mise sur le blackjack du dealer
 
-    public boolean isStanding;
-    private boolean isPlaying;
-    private String GameStatus;
+    private String GameStatus; // status de la partie
+    private boolean isStanding; // partie fini ou non
 
-    public Player(String id, String pseudo, List<String> hand, int score,Integer altscore, double wallet, double bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock, boolean assurance) {
+    //constructeur
+
+    public Player(String id, String pseudo, List<String> hand, int score,Integer altscore, double wallet, double bet, boolean isStanding , String GameStatus, int clock, boolean assurance) {
         this.id = id;
-        this.isStanding = isStanding;
         this.pseudo = pseudo;
         this.hand = hand;
         this.score = score;
         this.altscore = altscore;
         this.wallet = wallet;
         this.bet = bet;
-        this.isPlaying = isPlaying;
         this.GameStatus = GameStatus;
         this.clock = clock;
         this.assurance = assurance;
@@ -95,14 +94,6 @@ public class Player {
         this.bet = bet;
     }
 
-    public boolean getIsPlaying() {
-        return isPlaying;
-    }
-
-    public void setIsPlaying(boolean isPlaying) {
-        this.isPlaying = isPlaying;
-    }
-
     public String getGameStatus() {
         return GameStatus;
     }
@@ -134,8 +125,5 @@ public class Player {
     public void setAssurance(boolean assurance) {
         this.assurance = assurance;
     }
-
-
-
 
 }
