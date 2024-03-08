@@ -54,8 +54,11 @@ public class GameService {
 
 
 
+    private Thread clockThread;
+
     public void startClock() {
-        new Thread(() -> {
+        stopClock = false;
+        clockThread = new Thread(() -> {
             while (player.getClock() > 0 && !stopClock) {
                 player.setClock(player.getClock() - 1);
                 gameEvent.fire(new GameEventMessage("Clock", new GameStateCardsChange(player, dealer)));
@@ -69,22 +72,27 @@ public class GameService {
             if (!stopClock) {
                 hit(player.getId());
             }
-        }).start();
+        });
+        clockThread.start();
     }
 
     public void stopClock() {
         stopClock = true;
+        if (clockThread != null) {
+            clockThread.interrupt();
+        }
     }
 
 
     public void startGame() {
         // Distribuer les cartes aux joueurs
-        startClock();
+
         distributeCardToPlayer(player);
         distributeCardToPlayer(player);
         // Distribuer les cartes au croupier
         distributeCardToDealer();
         distributeCardToDealer();
+        startClock();
         // Envoyer l'état initial du jeu à tous les joueurs
         gameEvent.fire(new GameEventMessage("Deal", new GameStateCardsChange(player, dealer)));
     }
@@ -171,9 +179,15 @@ public class GameService {
         player.setScore(player.getScore() + score);
         if (player.getScore()==21){
             player.setGameStatus("BlackJack");
+            stopClock();
         }
         if(player.getScore()>21){
             player.setGameStatus("Busted");
+            stopClock();
+        }
+        else{
+            player.setClock(timeclock);
+            startClock();
         }
         gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
