@@ -255,7 +255,12 @@ public class GameService {
             if (cardSplit[0].equals("J") || cardSplit[0].equals("Q") || cardSplit[0].equals("K")) {
                 score = 10;
             } else if (cardSplit[0].equals("A")) {
-                score = 11;
+                if(dealer.getScore() + 11 > 21){
+                    score = 1;
+                }
+                else{
+                    score = 11;
+                }
             } else {
                 try {
                     score = Integer.parseInt(cardSplit[0]);
