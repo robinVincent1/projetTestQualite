@@ -180,7 +180,7 @@ public class GameService {
         //on ajoute le score de la carte au score du player
         String[] cardSplit = card.split("-");
         int score;
-        Integer altscore = null;
+        Integer altscore;
         if (cardSplit[0].equals("J") || cardSplit[0].equals("Q") || cardSplit[0].equals("K")) {
             score = 10;
             altscore = 10;
@@ -191,6 +191,7 @@ public class GameService {
         } else {
             try {
                 score = Integer.parseInt(cardSplit[0]);
+                altscore = score ;
             } catch (NumberFormatException e) {
                 // Gérer l'erreur de conversion
                 score = 0;
@@ -199,33 +200,46 @@ public class GameService {
         };
 
 
-
+        System.out.println("1");
         player.getHand().add(card);
-
+        System.out.println("2");
         if(player.getAltScore()!=null){
+            System.out.println("3");
             player.setAltScore(player.getAltScore() + altscore);
             player.setScore(player.getScore() + score);
+            if(player.getAltScore() > 21){
+                player.setAltScore(null);
+            }
         }
         else if(player.getAltScore()==null && cardSplit[0].equals("A")){
+            System.out.println("4");
             player.setAltScore(player.getScore() + altscore);
             player.setScore(player.getScore() + score);
+            if(player.getAltScore() > 21){
+                player.setAltScore(null);
+            }
         }
         else{
+            System.out.println("5");
             player.setScore(player.getScore() + score);
         }
 
         if (player.getScore()==21){
+            System.out.println("6");
             player.setGameStatus("BlackJack");
             stopClock();
         }
         if(player.getScore()>21){
+            System.out.println("7");
             player.setGameStatus("Busted");
             stopClock();
         }
         else{
+            System.out.println("8");
             player.setClock(timeclock);
             startClock();
         }
+        System.out.println("9");
         gameEvent.fire(new GameEventMessage("hit",new GameStateCardsChange(player, dealer)));
     }
 
