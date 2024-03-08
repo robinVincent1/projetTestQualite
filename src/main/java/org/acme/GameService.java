@@ -37,7 +37,7 @@ public class GameService {
 
 
     public String getInitialState() {
-        player = new Player("0", "hasard", new ArrayList<>(), 0, 100, 0, true, "Menu", false,timeclock);
+        player = new Player("0", "Pseudo", new ArrayList<>(), 0,null, 100, 0, true, "Menu", false,timeclock);
         dealer = new Dealer(0, false, new ArrayList<>());
         return new GameEventMessage("INITIAL_STATE", new GameStateCardsChange(player, dealer)).toJson();
     }
@@ -109,9 +109,20 @@ public class GameService {
 
     private void distributeCardToPlayer(Player player) {
         String card = drawCard();
-        int score = calculateCardScore(card);
         player.getHand().add(card);
-        player.setScore(player.getScore() + score);
+        int score = calculateCardScore(card);
+        String[] cardSplit = card.split("-");
+        if (cardSplit[0].equals("A")) {
+            player.setAltScore(player.getScore() + 11);
+            player.setScore(player.getScore() + 1);
+        }
+        else if(player.getAltScore() != null){
+            player.setScore(player.getScore() + score);
+            player.setAltScore(player.getAltScore() + score);
+        }
+        else {
+            player.setScore(player.getScore() + score);
+        }
     }
 
 
@@ -162,21 +173,36 @@ public class GameService {
         //on ajoute le score de la carte au score du player
         String[] cardSplit = card.split("-");
         int score;
+        Integer altscore = null;
         if (cardSplit[0].equals("J") || cardSplit[0].equals("Q") || cardSplit[0].equals("K")) {
             score = 10;
+            altscore = 10;
         } else if (cardSplit[0].equals("A")) {
-            score = 11;
+            score = 1;
+            altscore = 11;
+
         } else {
             try {
                 score = Integer.parseInt(cardSplit[0]);
             } catch (NumberFormatException e) {
                 // Gérer l'erreur de conversion
                 score = 0;
+                altscore = 0 ;
             }
         };
 
+
+
         player.getHand().add(card);
-        player.setScore(player.getScore() + score);
+
+        if(player.getAltScore()!=null){
+            player.setAltScore(player.getAltScore() + altscore);
+            player.setScore(player.getScore() + score);
+        }
+        else{
+            player.setScore(player.getScore() + score);
+        }
+
         if (player.getScore()==21){
             player.setGameStatus("BlackJack");
             stopClock();
@@ -193,11 +219,17 @@ public class GameService {
     }
 
 
+
     public void stand(String playerId) {
         // Mettre fin au tour du joueur
         stopClock();
         player.setIsStanding(true);
         player.setIsPlaying(false);
+        if (player.getAltScore() != null && player.getAltScore() <= 21) {
+            player.setScore(player.getAltScore());
+            player.setAltScore(null);
+        }
+
         while (dealer.getScore() <= 17) {
             String card = drawCard();
             //on ajoute le score de la carte au score du dealer

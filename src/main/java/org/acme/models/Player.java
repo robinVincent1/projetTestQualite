@@ -3,6 +3,7 @@ package org.acme.models;
 import java.util.List;
 
 
+
 public class Player {
     private String id;
     private String pseudo;
@@ -10,6 +11,8 @@ public class Player {
     private List<String> hand; // List de Card
 
     private int score;
+
+    private Integer altscore;
     private int wallet;
     private int bet;
 
@@ -19,12 +22,13 @@ public class Player {
     private boolean isPlaying;
     private String GameStatus;
 
-    public Player(String id, String pseudo, List<String> hand, int score, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock) {
+    public Player(String id, String pseudo, List<String> hand, int score,Integer altscore, int wallet, int bet, boolean isPlaying, String GameStatus , boolean isStanding, int clock) {
         this.id = id;
         this.isStanding = isStanding;
         this.pseudo = pseudo;
         this.hand = hand;
         this.score = score;
+        this.altscore = altscore;
         this.wallet = wallet;
         this.bet = bet;
         this.isPlaying = isPlaying;
@@ -110,6 +114,14 @@ public class Player {
 
     public void setClock(int clock) {
         this.clock = clock;
+    }
+
+    public Integer getAltScore() {
+        return altscore;
+    }
+
+    public void setAltScore(Integer altscore) {
+        this.altscore = altscore;
     }
 
 
