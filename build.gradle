@@ -17,6 +17,8 @@ dependencies {
     implementation 'io.quarkus:quarkus-websockets' // Dépendance pour les WebSockets
     implementation 'io.quarkus:quarkus-resteasy-jsonb' // Pour JSONB (nécessaire pour Jackson)
     implementation 'io.quarkus:quarkus-jackson'
+    testImplementation 'org.mockito:mockito-core:3.11.2'
+
 }
 
 group 'org.acme'

@@ -35,6 +35,39 @@ public class GameService {
         cardDeck = new CardDeck("1", cards, 52);
     }
 
+    public void setStopClock(boolean stopClock) {
+        this.stopClock = stopClock;
+    }
+
+    public Dealer getDealer() {
+        return dealer;
+    }
+    public boolean getStopClock() {
+        return stopClock;
+    }
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setGameEvent(Event<GameEventMessage> gameEvent) {
+        this.gameEvent = gameEvent;
+    }
+
+    public void setCardDeck(CardDeck cardDeck) {
+        this.cardDeck = cardDeck;
+    }
+
+    public int getTimeclock() {
+        return timeclock;
+    }
+
+    public void setDealer(Dealer dealer) {
+        this.dealer = dealer;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
     public String getInitialState() {
         player = new Player("0", "Pseudo", new ArrayList<>(), 0,null, 100, 0, true, "Menu", false,timeclock,false);
@@ -237,6 +270,8 @@ public class GameService {
         if(player.getScore()>21){
             System.out.println("7");
             player.setGameStatus("Busted");
+            player.setIsPlaying(false);
+            setStopClock(false);
             stopClock();
         }
         else{
@@ -295,16 +330,16 @@ public class GameService {
             dealer.getHand().add(card);
             dealer.setScore(dealer.getScore() + score);
         }
-        if (dealer.getScore() == 21 && player.getAssurance() == true) {
+        if (dealer.getScore() == 21 && player.getAssurance()) {
             player.setGameStatus("InsuranceWinner");
             player.setWallet(player.getWallet() + 2 * player.getBet());
         }
 
-        if (player.getScore() == dealer.getScore()) {
+        else if (player.getScore() == dealer.getScore()) {
             player.setGameStatus("Tie");
             player.setWallet(player.getWallet() + player.getBet());
         }
-        if (player.getScore() <= 21 && (player.getScore() > dealer.getScore() || dealer.getScore() > 21)) {
+        else if (player.getScore() <= 21 && (player.getScore() > dealer.getScore() || dealer.getScore() > 21)) {
             player.setGameStatus("Winner");
             player.setWallet(player.getBet() * 2 + player.getWallet());
         }
@@ -345,4 +380,6 @@ public class GameService {
         gameEvent.fire(new GameEventMessage("reload", new GameStateCardsChange(player, dealer)));
 
     }
+
+
 }

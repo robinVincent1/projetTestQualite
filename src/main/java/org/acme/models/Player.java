@@ -20,7 +20,7 @@ public class Player {
 
     private boolean assurance;
 
-    private boolean isStanding;
+    public boolean isStanding;
     private boolean isPlaying;
     private String GameStatus;
 
@@ -134,6 +134,7 @@ public class Player {
     public void setAssurance(boolean assurance) {
         this.assurance = assurance;
     }
+
 
 
 
