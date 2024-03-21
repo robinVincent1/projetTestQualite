@@ -1,0 +1,4 @@
+player bet 10
+player win 10
+player bet 20
+player lose 20
