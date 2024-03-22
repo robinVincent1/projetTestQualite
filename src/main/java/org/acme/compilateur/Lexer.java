@@ -27,18 +27,17 @@ public class Lexer {
     public List<Token> tokenize(String filePath) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(filePath));
         List<Token> tokens = new ArrayList<>();
-
         for (String line : lines) {
             String[] parts = line.split(" ");
             if (parts.length == 3 && parts[0].equalsIgnoreCase("player")) {
                 String decision = parts[1];
-                int bet;
+                int amount;
                 try {
-                    bet = Integer.parseInt(parts[2]);
+                    amount = Integer.parseInt(parts[2]);
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid step count: " + parts[2]);
                 }
-                tokens.add(new Token(parts[0], decision, bet));
+                tokens.add(new Token(parts[0], decision, amount));
             } else {
                 throw new IllegalArgumentException("Invalid command format: " + line);
             }

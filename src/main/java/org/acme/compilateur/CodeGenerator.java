@@ -33,10 +33,11 @@ public class CodeGenerator {
                     classContent.append("        player.setBet(").append(command.value).append(");\n");
                 }
             }
-            classContent.append("    }\n\n");
         }
         classContent.append("}\n\n");
+        classContent.append("}\n");
         // Voici la partie ajoutée pour écrire le contenu dans un fichier
+        System.out.println("3");
         Files.writeString(Paths.get(outputPath), classContent.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 }
